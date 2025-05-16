@@ -25,7 +25,7 @@ fn main() {
                     eprintln!("{}",e);
                 }
             },
-
+            "exit" => return,
             command => {
                 let mut child = Command::new(command)
                     .args(args)
