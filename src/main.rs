@@ -1,6 +1,7 @@
 use std::process::Child;
 use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
 use std::path::Path;
+use std::fs;
 use dirs;
 
 fn main() {
@@ -39,6 +40,45 @@ fn main() {
                     previous_command = None;
 
                 },
+                "mkdir" => {
+                    let mut args_iter = args.iter();
+
+                    let mut recursive = false;
+                    let mut target: Option<&str> = None;
+
+                    while let Some(arg) = args_iter.next() {
+                        if arg == "-p"{
+                            recursive = true;
+                        }else {
+                            target = Some(arg);
+                            break;
+                        }
+                        
+                    }
+
+                    // let new_dir = args.get(0);
+                    match target {
+                        Some(dir) => {
+                            let path = Path::new(dir);
+                            let result  = if recursive {
+                                fs::create_dir_all(path)
+                            }else {
+                                fs::create_dir(path)
+                            };
+
+                            if let Err(e) = result {
+                                eprintln!("mkdir: cannot create directory '{}': {}",dir,e);
+                            }
+
+                        },
+
+                        None => {
+                            eprintln!("mkdir: missing operand");
+                        },
+                        
+                    }
+                    previous_command = None;
+                }
 
                 "exit" => return,
 
