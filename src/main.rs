@@ -16,7 +16,7 @@ fn main() {
         while let Some(command) = commands.next() {
             let parsed = shell_words::split(command).expect("Failed to parse comand");
             if parsed.is_empty(){
-                continue;
+                continue;  //user press enter do nothing
             }
 
             let command = &parsed[0];
