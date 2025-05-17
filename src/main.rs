@@ -1,6 +1,7 @@
 use std::process::Child;
 use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
 use std::path::Path;
+use dirs;
 
 fn main() {
     loop {
@@ -25,10 +26,13 @@ fn main() {
 
             match command.as_str() {
                 "cd" => {
-                    let new_dir = args.get(0).map(|s| s.as_str()).unwrap_or("/");
-                    let root = Path::new(new_dir);
+                    let new_dir = args.get(0).map(|s| s.as_str());
+                    let target_dir = match new_dir {
+                        Some(path) => Path::new(path).to_path_buf(),
+                        None=> dirs::home_dir().expect("Could not get home directory"),
+                    };
 
-                    if let Err(e) = env::set_current_dir(&root){
+                    if let Err(e) = env::set_current_dir(&target_dir){
                         eprintln!("{}",e);
                     }
 
