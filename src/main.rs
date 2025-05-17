@@ -1,32 +1,31 @@
-#![allow(unused)]
-use std::iter::Cloned;
 use std::process::Child;
-use std::string;
-use std::sync::{Arc, Mutex};
-use std::{env, io::{self, stdin, stdout, Write}, process::{Command, Stdio}};
+use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
 use std::path::Path;
 
 fn main() {
     loop {
         print!("> ");
-        stdout().flush();
+        stdout().flush().unwrap();
 
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
 
-        let mut commands = input.trim().split(" | ").peekable();
+        let mut commands = input.trim().split('|').map(|s| s.trim()).peekable();
         let mut previous_command: Option<Child> = None;
 
         while let Some(command) = commands.next() {
-            let mut parts = input.trim().split_whitespace();
-            let command = parts.next().unwrap();
-            // let args = parts;
-            let args = parts.next();
+            let parsed = shell_words::split(command).expect("Failed to parse comand");
+            if parsed.is_empty(){
+                continue;
+            }
 
-            match command {
+            let command = &parsed[0];
+            let args = &parsed[1..];
+            // let args = parts.next();
+
+            match command.as_str() {
                 "cd" => {
-                    let new_dir = args.iter().peekable().peek()
-                        .map_or("/", |x| *x);
+                    let new_dir = args.get(0).map(|s| s.as_str()).unwrap_or("/");
                     let root = Path::new(new_dir);
 
                     if let Err(e) = env::set_current_dir(&root){
@@ -68,7 +67,7 @@ fn main() {
                             previous_command = Some(output);
                         },
 
-                        Err(e) => {
+                        Err(_) => {
                             previous_command = None;
                             eprintln!("nexsh: command not found: {}",command);
 
@@ -77,10 +76,11 @@ fn main() {
 
                 },
             }
-            if let Some(ref mut final_command) = previous_command{
-                final_command.wait();
-            }
 
+        }
+
+        if let Some(ref mut final_command) = previous_command{
+            final_command.wait().unwrap();
         }
 
     }
