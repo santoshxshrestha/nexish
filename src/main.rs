@@ -27,6 +27,20 @@ fn main() {
             // let args = parts.next();
 
             match command.as_str() {
+
+                "rmdir" => {
+                    if args.is_empty(){
+                        eprintln!("rmdir: missing operand");
+                    }else{
+                        for dir in args {
+                            match fs::remove_dir(dir){
+                                Ok(_) => {}
+                                Err(e) => eprintln!("rmdir: failed to remove '{}': {}",dir,e),
+                            }
+                        }
+                    }
+                },
+
                 "pwd" => {
                     let current_dir = current_dir().unwrap_or_else(|_| PathBuf::from("."));
                     println!("{}",current_dir.display());
