@@ -15,13 +15,7 @@ fn main() {
         stdin().read_line(&mut input).unwrap();
 
         let mut commands = input.trim().split(" | ").peekable();
-        // let mut previous_command = None;
-        // let mut previous_command = Arc::new(Mutex::new(None::<String>));
-        // let cloned_prev  = Arc::clone(&previous_command);
-
-        let prev_command = Arc::new(Mutex::new(None::<String>));
-        let previous_command  = Arc::clone(&prev_command);
-
+        let mut previous_command: Option<Child> = None;
 
         while let Some(command) = commands.next() {
             let mut parts = input.trim().split_whitespace();
@@ -39,21 +33,24 @@ fn main() {
                         eprintln!("{}",e);
                     }
 
-                    // previous_command = None;
-                    let mut prev = previous_command.lock().unwrap();
-                    *prev = None;
+                    previous_command = None;
+
                 },
 
                 "exit" => return,
 
                 command => {
-                    let stdin = previous_command
-                        .map_or(
-                            Stdio::inherit(),
-                            |output: Child| Stdio::from(output.stdout.unwrap())
-                        );
+                    let stdin = match &mut previous_command {
+                        Some(child) => {
+                            let stdout = child.stdout.take().expect("Failed to take the stdout");
+                            Stdio::from(stdout)
+                        },
+
+                        None => Stdio::inherit(),
+                    };
 
                     let stdout = if commands.peek().is_some(){
+
                         Stdio::piped()
                     }else{
                         Stdio::inherit()
@@ -80,14 +77,11 @@ fn main() {
 
                 },
             }
-            if let Some(mut final_command) = previous_command{
+            if let Some(ref mut final_command) = previous_command{
                 final_command.wait();
             }
 
         }
-
-
-
 
     }
 }
