@@ -1,6 +1,7 @@
+use std::env::current_dir;
 use std::process::Child;
 use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::fs;
 use dirs;
 
@@ -26,6 +27,11 @@ fn main() {
             // let args = parts.next();
 
             match command.as_str() {
+                "pwd" => {
+                    let current_dir = current_dir().unwrap_or_else(|_| PathBuf::from("."));
+                    println!("{}",current_dir.display());
+                },
+
                 "cd" => {
                     let new_dir = args.get(0).map(|s| s.as_str());
                     let target_dir = match new_dir {
@@ -53,7 +59,7 @@ fn main() {
                             target = Some(arg);
                             break;
                         }
-                        
+
                     }
 
                     // let new_dir = args.get(0);
@@ -75,7 +81,7 @@ fn main() {
                         None => {
                             eprintln!("mkdir: missing operand");
                         },
-                        
+
                     }
                     previous_command = None;
                 }
