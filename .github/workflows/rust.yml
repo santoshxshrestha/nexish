@@ -56,11 +56,17 @@ jobs:
         run: |
           cp target/release/${{ env.BINARY_NAME }} ${{ matrix.asset_name }}
           chmod +x ${{ matrix.asset_name }}
+      # Try a different approach for artifact uploading
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3 # Updated from v3 to v4
+        run: |
+          mkdir -p ./artifacts
+          cp ${{ matrix.asset_name }} ./artifacts/
+
+      # Try with a version that's definitely compatible with current GitHub Actions
+      - uses: actions/upload-artifact@v3.1.3
         with:
           name: ${{ matrix.artifact_name }}
-          path: ${{ matrix.asset_name }}
+          path: ./artifacts/${{ matrix.asset_name }}
 
   release:
     needs: build
@@ -68,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3.0.2
         with:
           path: artifacts
 
