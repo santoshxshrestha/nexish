@@ -57,7 +57,7 @@ jobs:
           cp target/release/${{ env.BINARY_NAME }} ${{ matrix.asset_name }}
           chmod +x ${{ matrix.asset_name }}
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4 # Updated from v3 to v4
+        uses: actions/upload-artifact@v3 # Updated from v3 to v4
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ matrix.asset_name }}
