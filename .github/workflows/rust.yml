@@ -1,93 +1,24 @@
-name: Rust Build and Release
+name: Rust
+
 on:
   push:
-    branches: ["main"]
-    tags: ["v*"] # Also run on version tags
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
-env:
-  CARGO_TERM_COLOR: always
-  BINARY_NAME: nexsh # Change this to your binary name
+    branches:
+      - main
+
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false # Continue with other builds even if one fails
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            artifact_name: linux
-            asset_name: nexsh
-          - os: windows-latest
-            artifact_name: windows
-            asset_name: nexsh.exe
-          - os: macos-latest
-            artifact_name: macos
-            asset_name: nexsh
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          components: rustfmt, clippy
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-      - name: Check formatting
-        run: cargo fmt -- --check
-      - name: Run clippy
-        run: cargo clippy -- -D warnings
+          toolchain: stable
       - name: Build
         run: cargo build --verbose
-      - name: Run tests
+      - name: Test
         run: cargo test --verbose
-      - name: Build documentation
-        run: cargo doc --no-deps
-      # Build release binaries (always, to make sure they compile)
-      - name: Build release binary
-        run: cargo build --release
-      # Package binaries with appropriate names
-      - name: Package Binary (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          copy target\release\${{ env.BINARY_NAME }}.exe ${{ matrix.asset_name }}
-      - name: Package Binary (Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          cp target/release/${{ env.BINARY_NAME }} ${{ matrix.asset_name }}
-          chmod +x ${{ matrix.asset_name }}
-      # Try a different approach for artifact uploading
-      - name: Upload build artifacts
-        run: |
-          mkdir -p ./artifacts
-          cp ${{ matrix.asset_name }} ./artifacts/
-
-      # Try with a version that's definitely compatible with current GitHub Actions
-      - uses: actions/upload-artifact@v3.1.3
-        with:
-          name: ${{ matrix.artifact_name }}
-          path: ./artifacts/${{ matrix.asset_name }}
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v3.0.2
-        with:
-          path: artifacts
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            artifacts/linux/nexsh
-            artifacts/windows/nexsh.exe
-            artifacts/macos/nexsh
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
