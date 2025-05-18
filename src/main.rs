@@ -1,9 +1,17 @@
 use std::env::current_dir;
+use std::fmt;
 use std::process::Child;
 use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use dirs;
+
+struct LsEntry(String);
+impl fmt::Display for LsEntry {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}  ", self.0)
+    }
+}
 
 fn main() {
     loop {
@@ -27,6 +35,28 @@ fn main() {
             // let args = parts.next();
 
             match command.as_str() {
+                "ls" => {
+                    let entries = if let Some(dir) = args.iter().next(){
+                        fs::read_dir(dir).unwrap()
+                    }else {
+                        fs::read_dir(".").unwrap()
+                    };
+
+                    for entry in entries {
+                        match entry {
+                            Ok(dir_entry) => {
+                                let file_name = dir_entry.file_name();
+                                let entry = LsEntry(file_name.to_string_lossy().to_string());
+                                print!("{}",entry);
+                            },
+                            Err(e) => {
+                                eprintln!("ls: Error rendering entry: {}",e);
+                            }
+                        }
+                    }
+                    println!();
+                },
+
                 "touch" => {
                     if args.is_empty(){
                         eprintln!("touch: missing file operand");
