@@ -1,22 +1,95 @@
 name: Rust
-
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+    tags: ["v*"] # Also run on version tags
   pull_request:
-    branches: [ "main" ]
-
+    branches: ["main"]
 env:
   CARGO_TERM_COLOR: always
-
+  BINARY_NAME: nexsh # Change this to your binary name
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: linux
+            asset_name: nexsh
+          - os: windows-latest
+            artifact_name: windows
+            asset_name: nexsh.exe
+          - os: macos-latest
+            artifact_name: macos
+            asset_name: nexsh
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: Check formatting
+        run: cargo fmt -- --check
+
+      - name: Run clippy
+        run: cargo clippy -- -D warnings
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Build documentation
+        run: cargo doc --no-deps
+
+      # Build release binaries (always, to make sure they compile)
+      - name: Build release binary
+        run: cargo build --release
+
+      # Package binaries with appropriate names
+      - name: Package Binary (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          copy target/release/${{ env.BINARY_NAME }}.exe ${{ matrix.asset_name }}
+
+      - name: Package Binary (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cp target/release/${{ env.BINARY_NAME }} ${{ matrix.asset_name }}
+          chmod +x ${{ matrix.asset_name }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.asset_name }}
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ matrix.asset_name }}
+          asset_name: ${{ matrix.asset_name }}
+          asset_content_type: application/octet-stream
