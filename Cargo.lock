@@ -63,6 +63,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nexsh"
+version = "0.1.0"
+dependencies = [
+ "dirs",
+ "shell-words",
+]
+
+[[package]]
 name = "option-ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -95,14 +103,6 @@ dependencies = [
  "getrandom",
  "libredox",
  "thiserror",
-]
-
-[[package]]
-name = "shell"
-version = "0.1.0"
-dependencies = [
- "dirs",
- "shell-words",
 ]
 
 [[package]]

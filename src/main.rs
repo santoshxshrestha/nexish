@@ -61,41 +61,31 @@ fn main() {
 
                 },
                 "mkdir" => {
+                    let mut recursive = false;
+                    let mut targets:Vec<&str> = Vec::new();
                     let mut args_iter = args.iter();
 
-                    let mut recursive = false;
-                    let mut target: Option<&str> = None;
 
                     while let Some(arg) = args_iter.next() {
                         if arg == "-p"{
                             recursive = true;
                         }else {
-                            target = Some(arg);
-                            break;
+                            targets.push(arg);
                         }
-
                     }
 
-                    // let new_dir = args.get(0);
-                    match target {
-                        Some(dir) => {
-                            let path = Path::new(dir);
-                            let result  = if recursive {
-                                fs::create_dir_all(path)
-                            }else {
-                                fs::create_dir(path)
-                            };
 
-                            if let Err(e) = result {
-                                eprintln!("mkdir: cannot create directory '{}': {}",dir,e);
-                            }
+                    for dir in targets {
+                        let path = Path::new(dir);
+                        let resut = if recursive {
+                            fs::create_dir_all(path)
+                        }else {
+                            fs::create_dir(path)
+                        };
 
-                        },
-
-                        None => {
-                            eprintln!("mkdir: missing operand");
-                        },
-
+                        if let Err(e) =  resut {
+                            eprintln!("mkdir: cannot create directory '{}': {}",dir,e);
+                        }
                     }
                     previous_command = None;
                 }
