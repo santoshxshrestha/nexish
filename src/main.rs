@@ -2,7 +2,7 @@ use std::env::current_dir;
 use std::process::Child;
 use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
-use std::fs;
+use std::fs::{self, File};
 use dirs;
 
 fn main() {
@@ -27,6 +27,18 @@ fn main() {
             // let args = parts.next();
 
             match command.as_str() {
+                "touch" => {
+                    if args.is_empty(){
+                        eprintln!("touch: missing file operand");
+                    }else {
+                        for file in args{
+                            match File::create_new(file) {
+                                Ok(_) => {},
+                                Err(e) => eprintln!("touch: file creating failed '{}': {}",file,e),
+                            }
+                        }
+                    }
+                },
 
                 "rmdir" => {
                     if args.is_empty(){
