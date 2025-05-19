@@ -21,7 +21,10 @@ This project is made for personal learning and to improve understanding of:
 
 ## Usage
 
-You need [Rust](https://www.rust-lang.org/tools/install) installed.
+[![Rust](https://img.shields.io/badge/Requires-Rust-blue?logo=rust)](https://www.rust-lang.org/tools/install)
+
+
+You need Rust installed.
 
 ### Building (Debug build)
 
@@ -122,8 +125,6 @@ sudo rm /usr/bin/nexsh
 - Contributions or suggestions are welcome, but the main goal is personal improvement and exploration.
 
 ## License
-
-MIT License
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)---
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Made as a Rust learning exercise. Enjoy exploring!
