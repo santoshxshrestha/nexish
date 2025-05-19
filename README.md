@@ -32,7 +32,6 @@ cargo build
 ### Building (Release build)
 
 ```bash
-cargo build
 cargo build --release
 ```
 
@@ -53,8 +52,69 @@ ls -a
 mkdir
 touch
 rmdir
-
 ```
+
+---
+
+## Installing `nexsh` system-wide
+
+If you want to use `nexsh` from any directory in your terminal, you can copy the compiled binary into a directory included in your system's `PATH`, such as `/usr/local/bin` (recommended) or `/usr/bin`.
+
+### Steps
+
+1. **Build the Release Binary**
+
+   ```bash
+   cargo build --release
+   ```
+
+   This will place the binary at `target/release/nexsh`.
+
+2. **Copy to `/usr/local/bin` (recommended)**
+
+   ```bash
+   sudo cp target/release/nexsh /usr/local/bin/nexsh
+   ```
+
+   Or, to `/usr/bin` (if you prefer):
+
+   ```bash
+   sudo cp target/release/nexsh /usr/bin/nexsh
+   ```
+
+3. **(Optional) Ensure it is executable**
+
+   Usually, Cargo makes it executable, but you can be sure by running:
+
+   ```bash
+   sudo chmod +x /usr/local/bin/nexsh
+   ```
+
+4. **Run `nexsh` from anywhere**
+
+   Now you can just type:
+
+   ```bash
+   nexsh
+   ```
+
+   from any terminal prompt.
+
+#### Uninstallation
+
+To remove `nexsh` from your system:
+
+```bash
+sudo rm /usr/local/bin/nexsh
+```
+
+or
+
+```bash
+sudo rm /usr/bin/nexsh
+```
+
+---
 
 ## Notes
 
