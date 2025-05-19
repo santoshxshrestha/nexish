@@ -40,7 +40,7 @@ fn main() {
                     let mut targets:Vec<&str> = Vec::new();
                     let mut hidden = false;
                     
-                    for arg in args.iter(){
+                    for arg in args.iter().next(){
                         if arg == "-a"{
                             hidden = true;
                         }else{
