@@ -21,12 +21,19 @@ This project is made for personal learning and to improve understanding of:
 
 ## Usage
 
-### Building
-
 You need [Rust](https://www.rust-lang.org/tools/install) installed.
+
+### Building (Debug build)
 
 ```bash
 cargo build
+```
+
+### Building (Release build)
+
+```bash
+cargo build
+cargo build --release
 ```
 
 ### Running
