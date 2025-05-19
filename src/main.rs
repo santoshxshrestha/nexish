@@ -14,6 +14,42 @@ impl fmt::Display for LsEntry {
     }
 }
 
+impl AsRef<str> for LsEntry {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
+}
+
+struct LsEntries(Vec<LsEntry>);
+impl LsEntries {
+    fn new()-> Self {
+        LsEntries(Vec::new())
+
+    }
+
+    fn push(&mut self, entry: LsEntry) {
+        self.0.push(entry);
+    }
+}
+impl<'a> IntoIterator for &'a LsEntries{
+    type Item = &'a LsEntry;
+    type IntoIter = std::slice::Iter<'a, LsEntry>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
+    }
+}
+
+impl fmt::Display for LsEntries {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for entry in &self.0{
+            write!(f, "{entry}")?;
+        }
+        Ok(())
+    }
+
+}
+
 fn main() {
     loop {
         print!("> ");
@@ -37,43 +73,44 @@ fn main() {
 
             match command.as_str() {
                 "ls" => {
-                    let mut targets:Vec<&str> = Vec::new();
                     let mut hidden = false;
-                    
-                    for arg in args.iter().next(){
-                        if arg == "-a"{
+                    let mut dir_path = ".".to_string();
+
+                    // Parse arguments
+                    for arg in args {
+                        if arg == "-a" {
                             hidden = true;
-                        }else{
-                            targets.push(arg);
+                        } else {
+                            dir_path = arg.to_string();
                         }
                     }
-                    let entries: Result<fs::ReadDir, std::io::Error> = if let Some(dir) = targets.iter().next(){
-                        fs::read_dir(dir)
-                    }else {
-                        fs::read_dir(".")
+
+                    let entries = match fs::read_dir(&dir_path) {
+                        Ok(e) => e,
+                        Err(e) => {
+                            eprintln!("ls: Error reading directory: {}", e);
+                            continue;
+                        }
                     };
 
+                    let mut output = LsEntries::new();
                     for entry in entries {
                         match entry {
-                            Ok(read_dir) => {
-                                let file_name = read_dir.file_name();
-                                let entry = Vec::new();
-                                if hidden {
+                            Ok(content) => {
+                                let file_name = content.file_name();
+                                let file_name_str = file_name.to_string_lossy();
+                                if !hidden && file_name_str.starts_with('.') {
                                     continue;
-                                }else {
-                                    entry = LsEntry(file_name.to_string_lossy().to_string());
-                                    entry.push(LsEntry(file_name))
                                 }
-                                print!("{}",entry);
-                            },
+                                output.push(LsEntry(file_name_str.to_string()));
+                            }
                             Err(e) => {
-                                eprintln!("ls: Error rendering entry: {}",e);
+                                eprintln!("ls: Error rendering entry: {}", e);
                             }
                         }
                     }
-                    println!();
+                    println!("{}", output);
                 },
-
                 "touch" => {
                     if args.is_empty(){
                         eprintln!("touch: missing file operand");
