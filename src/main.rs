@@ -1,7 +1,8 @@
+use std::io::Write;
 use std::env::current_dir;
 use std::fmt;
 use std::process::Child;
-use std::{env, io::{ stdin, stdout, Write}, process::{Command, Stdio}};
+use std::{env, io::{ stdin, stdout}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use dirs;
@@ -36,17 +37,33 @@ fn main() {
 
             match command.as_str() {
                 "ls" => {
-                    let entries = if let Some(dir) = args.iter().next(){
-                        fs::read_dir(dir).unwrap()
+                    let mut targets:Vec<&str> = Vec::new();
+                    let mut hidden = false;
+                    
+                    for arg in args.iter().next(){
+                        if arg == "-a"{
+                            hidden = true;
+                        }else{
+                            targets.push(arg);
+                        }
+                    }
+                    let entries: Result<fs::ReadDir, std::io::Error> = if let Some(dir) = targets.iter().next(){
+                        fs::read_dir(dir)
                     }else {
-                        fs::read_dir(".").unwrap()
+                        fs::read_dir(".")
                     };
 
                     for entry in entries {
                         match entry {
-                            Ok(dir_entry) => {
-                                let file_name = dir_entry.file_name();
-                                let entry = LsEntry(file_name.to_string_lossy().to_string());
+                            Ok(read_dir) => {
+                                let file_name = read_dir.file_name();
+                                let entry = Vec::new();
+                                if hidden {
+                                    continue;
+                                }else {
+                                    entry = LsEntry(file_name.to_string_lossy().to_string());
+                                    entry.push(LsEntry(file_name))
+                                }
                                 print!("{}",entry);
                             },
                             Err(e) => {
@@ -119,13 +136,13 @@ fn main() {
 
                     for dir in targets {
                         let path = Path::new(dir);
-                        let resut = if recursive {
+                        let result = if recursive {
                             fs::create_dir_all(path)
                         }else {
                             fs::create_dir(path)
                         };
 
-                        if let Err(e) =  resut {
+                        if let Err(e) =  result {
                             eprintln!("mkdir: cannot create directory '{}': {}",dir,e);
                         }
                     }
