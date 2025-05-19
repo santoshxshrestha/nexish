@@ -39,9 +39,14 @@ This will start the shell. You can type commands like:
 
 ```
 ls
+cd
 cd ..
 pwd
 ls -a
+mkdir
+touch
+rmdir
+
 ```
 
 ## Notes
