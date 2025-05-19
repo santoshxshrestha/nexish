@@ -124,7 +124,6 @@ sudo rm /usr/bin/nexsh
 ## License
 
 MIT License
-
----
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)---
 
 Made as a Rust learning exercise. Enjoy exploring!
