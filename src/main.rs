@@ -61,7 +61,7 @@ fn get_username()-> String{
 
 fn main() {
     loop {
-        println!("{}",get_username());
+        println!("  {}",get_username());
         print!("-> ");
         stdout().flush().unwrap();
 
