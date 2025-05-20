@@ -61,7 +61,8 @@ fn get_username()-> String{
 
 fn main() {
     loop {
-        print!("{}> ",get_username());
+        println!("{}",get_username());
+        print!("-> ");
         stdout().flush().unwrap();
 
         let mut input = String::new();
