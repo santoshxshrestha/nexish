@@ -6,6 +6,8 @@ use std::{env, io::{ stdin, stdout}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use dirs;
+use nix::unistd::Uid;
+use users::{get_user_by_uid};
 
 struct LsEntry(String);
 impl fmt::Display for LsEntry {
@@ -50,9 +52,16 @@ impl fmt::Display for LsEntries {
 
 }
 
+fn get_username()-> String{
+    let uid = Uid::current().as_raw();
+    get_user_by_uid(uid)
+        .map(|u| u.name().to_string_lossy().into_owned())
+        .unwrap_or_else(||"unknown".to_string())
+}
+
 fn main() {
     loop {
-        print!("> ");
+        print!("{}> ",get_username());
         stdout().flush().unwrap();
 
         let mut input = String::new();
