@@ -8,6 +8,7 @@ use std::fs::{self, File};
 use dirs;
 use nix::unistd::Uid;
 use users::{get_user_by_uid};
+use chrono::{Local,self};
 
 struct LsEntry(String);
 impl fmt::Display for LsEntry {
@@ -73,9 +74,16 @@ fn get_current_dir() -> std::io::Result<PathBuf> {
     std::env::current_dir()
 }
 
+fn get_time() -> String {
+    let current_time = Local::now();
+    let fomatted = format!("{}",current_time.format("%H:%M"));
+    return fomatted;
+}
+
+
 fn main() {
     loop {
-        println!("  {} in {}",get_username(), get_relative_dir());
+        println!("  {} in {} at  {}",get_username(), get_relative_dir(),get_time());
         print!("-> ");
         stdout().flush().unwrap();
 
@@ -262,3 +270,4 @@ fn main() {
 
     }
 }
+
