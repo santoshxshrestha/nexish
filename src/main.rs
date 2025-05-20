@@ -59,9 +59,23 @@ fn get_username()-> String{
         .unwrap_or_else(||"unknown".to_string())
 }
 
+fn get_relative_dir() -> String {
+    let current_dir = current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    if let Some(home_dir) = dirs::home_dir(){
+        if let Ok(stripped) = current_dir.strip_prefix(&home_dir){
+            return format!("~/{}", stripped.display());
+        }
+    }
+    current_dir.display().to_string()
+}
+
+fn get_current_dir() -> std::io::Result<PathBuf> {
+    std::env::current_dir()
+}
+
 fn main() {
     loop {
-        println!("  {}",get_username());
+        println!("  {} in {}",get_username(), get_relative_dir());
         print!("-> ");
         stdout().flush().unwrap();
 
@@ -148,8 +162,11 @@ fn main() {
                 },
 
                 "pwd" => {
-                    let current_dir = current_dir().unwrap_or_else(|_| PathBuf::from("."));
-                    println!("{}",current_dir.display());
+                    match get_current_dir() {
+                        Ok(path) => println!("{}",path.display()),
+                        Err(e) => eprintln!("pwd: error retrieving current directory: {}",e),
+                        
+                    }
                 },
 
                 "cd" => {
