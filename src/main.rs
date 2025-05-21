@@ -79,14 +79,26 @@ fn get_username() -> String{
 
 fn device_logo() -> &'static str {
     match os_info::get().os_type() {
-        os_info::Type::Windows => " ", // Windows logo
-        os_info::Type::Macos => "🍏",   // Apple logo (no official emoji)
-        os_info::Type::Linux => "",   // Tux, the Linux penguin
-        os_info::Type::Android => "", // Android robot
-        os_info::Type::Redhat => " ",  // Fedora/RedHat
-        os_info::Type::Arch => "󰣇 ",
-        os_info::Type::Ubuntu => " ",  // Ubuntu
-        _ => "💻",                      // Generic computer
+        os_info::Type::Windows => " ",
+        os_info::Type::Macos => "🍏", 
+        os_info::Type::Linux => "", 
+        os_info::Type::Android => "",
+        os_info::Type::Redhat => " ",
+        os_info::Type::Arch => "󰣇 ", 
+        os_info::Type::Pop => " ", 
+        os_info::Type::Ubuntu => " ",
+        os_info::Type::Kali=> " ",
+        os_info::Type::Mint => "󰣭 ",
+        os_info::Type::SUSE => " ",
+        os_info::Type::Artix => " ",
+        os_info::Type::Void => " ",
+        os_info::Type::NixOS=> " ",
+        os_info::Type::Alpine => " ",
+        os_info::Type::CentOS=> " ",
+        os_info::Type::Debian => " ",
+        os_info::Type::Gentoo => " ",
+        os_info::Type::Unknown => " ",
+        _ => "💻",                   
     }
 }
 
