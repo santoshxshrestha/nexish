@@ -6,8 +6,7 @@ use std::{env, io::{ stdin, stdout}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use dirs;
-use nix::unistd::Uid;
-use users::{get_user_by_uid};
+use users::{get_user_by_uid, get_current_uid};
 use chrono::{Local,self};
 
 struct LsEntry(String);
@@ -54,10 +53,10 @@ impl fmt::Display for LsEntries {
 }
 
 fn get_username()-> String{
-    let uid = Uid::current().as_raw();
+    let uid = get_current_uid();
     get_user_by_uid(uid)
-        .map(|u| u.name().to_string_lossy().into_owned())
-        .unwrap_or_else(||"unknown".to_string())
+        .and_then(|u| u.name().to_str().map(|s| s.to_owned()))
+        .unwrap_or_else(|| "unknown".to_string())
 }
 
 fn get_relative_dir() -> String {
