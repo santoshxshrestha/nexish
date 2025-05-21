@@ -100,6 +100,9 @@ fn main() {
             // let args = parts.next();
 
             match command.as_str() {
+                "whoami"=> {
+                    println!("{}",get_username());
+                },
                 "ls" => {
                     let mut hidden = false;
                     let mut dir_path = ".".to_string();
