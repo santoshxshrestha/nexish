@@ -105,22 +105,26 @@ fn device_logo() -> &'static str {
     }
 }
 
-fn git_info()-> Option<String> {
-    let repo = Repository::discover(".").ok()?;
-    let head = repo.head().ok()?;
-    let branch = head.shorthand()?;
-    Some(branch.to_string())
+fn git_info()-> String {
+    if let Ok(repo) = Repository::discover("."){
+        if let Ok(head) =  repo.head(){
+            if let Some(branch) =  head.shorthand(){
+                return format!("  {} ", branch);
+            }
+        }
+    }
+    String::new()
 }
 
 fn main() {
     loop {
-        let branch = git_info().unwrap_or_else(||"".to_string());
-        let info = if branch.is_empty(){
-            "".to_string()
-        }else{
-            format!(" on {} ",branch)
-        };
-        println!("{}{} in {} {}at  {}",device_logo(),get_username() ,get_relative_dir(),info,get_time());
+        println!("{}{} in {} {}at  {}",
+            device_logo(),
+            get_username(),
+            get_relative_dir(),
+            git_info(),
+            get_time()
+        );
         print!("-> ");
         stdout().flush().unwrap();
 
