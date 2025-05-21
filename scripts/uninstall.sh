@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 set -e
-echo "=== Nexsh Uninstaller ==="
+echo "=== nexish Uninstaller ==="
 
-INSTALL_PATH="/usr/local/bin/nexsh"
-REPO_DIR="$HOME/nexsh"
+INSTALL_PATH="/usr/local/bin/nexish"
+REPO_DIR="$HOME/nexish"
 
 if [ ! -f "$INSTALL_PATH" ]; then
-    echo "Error: nexsh binary is not installed at $INSTALL_PATH"
+    echo "Error: nexish binary is not installed at $INSTALL_PATH"
 else
     sudo rm -f "$INSTALL_PATH"
-    echo "Removed nexsh binary from $INSTALL_PATH"
+    echo "Removed nexish binary from $INSTALL_PATH"
 fi
 
 if [ ! -d "$REPO_DIR" ]; then
-    echo "Warning: nexsh repository not found at $REPO_DIR"
+    echo "Warning: nexish repository not found at $REPO_DIR"
 else
     rm -rf "$REPO_DIR"
-    echo "Removed nexsh repository at $REPO_DIR"
+    echo "Removed nexish repository at $REPO_DIR"
 fi
 
-echo "nexsh is completely removed."
+echo "nexish is completely removed."

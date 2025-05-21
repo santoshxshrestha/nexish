@@ -254,7 +254,7 @@ fn main() {
 
                         Err(_) => {
                             previous_command = None;
-                            eprintln!("nexsh: command not found: {}",command);
+                            eprintln!("nexish: command not found: {}",command);
 
                         }
                     }

@@ -1,6 +1,6 @@
-# nexsh
+# nexish
 
-**nexsh** is a simple, experimental shell created as a learning project in Rust.
+**nexish** is a simple, experimental shell created as a learning project in Rust.
 
 ---
 
@@ -42,11 +42,11 @@ You have two options: automated script or manual install.
 **Recommended:** Installs the latest release binary to your system PATH.
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexsh/main/scripts/install.sh | bash
+curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexish/main/scripts/install.sh | bash
 ```
 
 - This script will:
-  1. Build `nexsh` in release mode (if Rust is present).
+  1. Build `nexish` in release mode (if Rust is present).
   2. Copy the binary to `/usr/local/bin`.
   3. Make it executable.
 
@@ -61,8 +61,8 @@ If you prefer full control or want to customize the build:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/santoshxshrestha/nexsh.git
-   cd nexsh
+   git clone https://github.com/santoshxshrestha/nexish.git
+   cd nexish
    ```
 
 2. **Build the Release Binary:**
@@ -71,24 +71,24 @@ If you prefer full control or want to customize the build:
    cargo build --release
    ```
 
-   This places the binary at `target/release/nexsh`.
+   This places the binary at `target/release/nexish`.
 
 3. **Copy to a PATH directory (e.g., `/usr/local/bin`):**
 
    ```bash
-   sudo cp target/release/nexsh /usr/local/bin/nexsh
+   sudo cp target/release/nexish /usr/local/bin/nexish
    ```
 
 4. **(Optional) Ensure executable permission:**
 
    ```bash
-   sudo chmod +x /usr/local/bin/nexsh
+   sudo chmod +x /usr/local/bin/nexish
    ```
 
 5. **Run from anywhere:**
 
    ```bash
-   nexsh
+   nexish
    ```
 
 ---
@@ -100,7 +100,7 @@ You can uninstall using the provided script or manually:
 ### 🔹 1. Quick Uninstall via Script
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexsh/main/scripts/uninstall.sh | bash
+curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexish/main/scripts/uninstall.sh | bash
 ```
 
 ### 🔹 2. Manual Uninstall
@@ -108,19 +108,19 @@ curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexsh/main/scripts
 Remove the binary from your PATH:
 
 ```bash
-sudo rm /usr/local/bin/nexsh
+sudo rm /usr/local/bin/nexish
 ```
 
 or
 
 ```bash
-sudo rm /usr/bin/nexsh
+sudo rm /usr/bin/nexish
 ```
 
 If you also want to remove your cloned repository:
 
 ```bash
-rm -rf ~/nexsh
+rm -rf ~/nexish
 ```
 
 ---
@@ -130,7 +130,7 @@ rm -rf ~/nexsh
 After installation, start the shell by typing:
 
 ```bash
-nexsh
+nexish
 ```
 
 You can use commands like:
