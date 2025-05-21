@@ -3,7 +3,6 @@ set -e
 
 echo "=== Nexsh Installer ==="
 
-# Step 1: Check for Rust and Cargo, install if not present
 if ! command -v cargo >/dev/null 2>&1; then
     echo "Rust is not installed. Installing via rustup..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
