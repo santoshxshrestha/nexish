@@ -31,6 +31,16 @@ This project is designed primarily for learning and experimentation with:
 
 You need [Rust](https://www.rust-lang.org/tools/install) installed.
 
+### 🖋️ Nerd Font Support (for Icons/Symbols)
+
+Some parts of `nexish` use special Unicode symbols and icons (such as device logos) from [Nerd Fonts](https://www.nerdfonts.com/).  
+**For the best experience**, configure your terminal to use a Nerd Font. Otherwise, some symbols may appear as squares or question marks.
+
+- **How to use Nerd Fonts:**
+  - Download a patched font from [Nerd Fonts](https://www.nerdfonts.com/font-downloads).
+  - Set your terminal emulator to use this font (check your terminal's settings/preferences).
+- **If you do not use a Nerd Font:** The shell will still work, but icons/logos may not display properly.
+
 ---
 
 ## 📦 Installation
