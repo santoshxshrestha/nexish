@@ -8,6 +8,7 @@ use std::fs::{self, File};
 use dirs;
 use chrono::{Local,self};
 use whoami;
+use os_info;
 
 struct LsEntry(String);
 impl fmt::Display for LsEntry {
@@ -76,10 +77,22 @@ fn get_username() -> String{
     whoami::realname()
 }
 
+fn device_logo() -> &'static str {
+    match os_info::get().os_type() {
+        os_info::Type::Windows => " ", // Windows logo
+        os_info::Type::Macos => "🍏",   // Apple logo (no official emoji)
+        os_info::Type::Linux => "",   // Tux, the Linux penguin
+        os_info::Type::Android => "", // Android robot
+        os_info::Type::Redhat => " ",  // Fedora/RedHat
+        os_info::Type::Arch => "󰣇 ",
+        os_info::Type::Ubuntu => " ",  // Ubuntu
+        _ => "💻",                      // Generic computer
+    }
+}
 
 fn main() {
     loop {
-        println!("  {} in {} at  {}",get_username(), get_relative_dir(),get_time());
+        println!("{}{} in {} at  {}",device_logo(),get_username() ,get_relative_dir(),get_time());
         print!("-> ");
         stdout().flush().unwrap();
 
