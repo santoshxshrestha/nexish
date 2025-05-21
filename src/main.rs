@@ -1,6 +1,8 @@
+#![allow(unused)]
+use std::fmt::format;
 use std::io::Write;
 use std::env::current_dir;
-use std::fmt;
+use std::{alloc, fmt};
 use std::process::Child;
 use std::{env, io::{ stdin, stdout}, process::{Command, Stdio}};
 use std::path::{Path, PathBuf};
@@ -9,6 +11,7 @@ use dirs;
 use chrono::{Local,self};
 use whoami;
 use os_info;
+use git2::{RemoteHead, Repository};
 
 struct LsEntry(String);
 impl fmt::Display for LsEntry {
@@ -102,9 +105,22 @@ fn device_logo() -> &'static str {
     }
 }
 
+fn git_info()-> Option<String> {
+    let repo = Repository::discover(".").ok()?;
+    let head = repo.head().ok()?;
+    let branch = head.shorthand()?;
+    Some(branch.to_string())
+}
+
 fn main() {
     loop {
-        println!("{}{} in {} at  {}",device_logo(),get_username() ,get_relative_dir(),get_time());
+        let branch = git_info().unwrap_or_else(||"".to_string());
+        let info = if branch.is_empty(){
+            "".to_string()
+        }else{
+            format!(" on {} ",branch)
+        };
+        println!("{}{} in {} {}at  {}",device_logo(),get_username() ,get_relative_dir(),info,get_time());
         print!("-> ");
         stdout().flush().unwrap();
 
