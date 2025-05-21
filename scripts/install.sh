@@ -1,33 +1,62 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== nexish Installer ==="
+GREEN="\033[0;32m"
+YELLOW="\033[1;33m"
+CYAN="\033[0;36m"
+RED="\033[0;31m"
+BOLD="\033[1m"
+RESET="\033[0m"
+CHECK="${GREEN}✅${RESET}"
+FAIL="${RED}❌${RESET}"
+INFO="${CYAN}➜${RESET}"
 
+echo -e "${BOLD}${CYAN}"
+echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+echo "┃           nexish Installer           ┃"
+echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+echo -e "${RESET}"
+
+echo -e "${INFO} Checking for Rust toolchain..."
 if ! command -v cargo >/dev/null 2>&1; then
-    echo "Rust is not installed. Installing via rustup..."
+    echo -e "${YELLOW}Rust is not installed. Installing via rustup...${RESET}"
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     export PATH="$HOME/.cargo/bin:$PATH"
+    echo -e "${CHECK} Rust installed!"
 else
-    echo "Rust is already installed."
+    echo -e "${CHECK} Rust is already installed."
 fi
 
-git clone --depth 1 --branch main https://github.com/santoshxshrestha/nexish.git "$HOME/nexish"
+echo -e "${INFO} Cloning nexish repository..."
+if [ -d "$HOME/nexish" ]; then
+    echo -e "${YELLOW}A previous nexish directory exists. Updating repository...${RESET}"
+    cd "$HOME/nexish"
+    git pull
+else
+    git clone --depth 1 --branch main https://github.com/santoshxshrestha/nexish.git "$HOME/nexish"
+fi
 
-echo "Building nexish in release mode..."
+echo -e "${INFO} Building nexish in release mode..."
 cd "$HOME/nexish"
 cargo build --release
 
 BINARY_PATH="$HOME/nexish/target/release/nexish"
 INSTALL_DIR="/usr/local/bin"
 if [ ! -f "$BINARY_PATH" ]; then
-    echo "Error: Release binary not found at $BINARY_PATH."
+    echo -e "${FAIL} Error: Release binary not found at $BINARY_PATH."
     exit 1
 fi
 
-echo "Copying nexish to $INSTALL_DIR (you may need to enter your password)..."
+echo -e "${INFO} Installing nexish to ${INSTALL_DIR} (may need sudo)..."
 sudo cp "$BINARY_PATH" "$INSTALL_DIR/nexish"
-
 sudo chmod +x "$INSTALL_DIR/nexish"
 
-echo "nexish has been installed to $INSTALL_DIR and should be available in your PATH."
-echo "You can now run 'nexish' from anywhere in your terminal."
+echo -e "${CHECK} nexish installed to ${INSTALL_DIR} and available in your PATH."
+
+echo -e "\n${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${BOLD}  Nerd Font Required for Best Icon Support  ${RESET}"
+echo -e "  ${YELLOW}For best visual experience, set your terminal font to a Nerd Font."
+echo -e "  Download: ${CYAN}https://www.nerdfonts.com/font-downloads${RESET}"
+echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
+
+echo -e "${CHECK} You can now run '${BOLD}nexish${RESET}' from anywhere in your terminal."
