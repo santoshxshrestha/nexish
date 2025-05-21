@@ -2,110 +2,110 @@
 
 **nexsh** is a simple, experimental shell created as a learning project in Rust.
 
-## Purpose
+---
 
-This project is made for personal learning and to improve understanding of:
+## 🚀 Overview
 
-- Rust's standard library (`std::fs`, `std::process`, etc)
+This project is designed primarily for learning and experimentation with:
+
+- Rust's standard library (`std::fs`, `std::process`, etc.)
 - Command-line argument parsing (manual and with crates like `clap`)
 - File system interaction
 - Basic shell design and command implementation
 
-## Features
+---
+
+## ✨ Features
 
 - Basic shell prompt and command loop
-- Built-in commands: `ls`, `cd`, `pwd`, and more
-- Manual flag parsing (with optional plans to use `clap`)
-- Listing directory contents and changing directories
-- Focus on understanding, not production use
-
-## Usage
-
-[![Rust](https://img.shields.io/badge/Requires-Rust-blue?logo=rust)](https://www.rust-lang.org/tools/install)
-
-
-You need Rust installed.
-
-### Building (Debug build)
-
-```bash
-cargo build
-```
-
-### Building (Release build)
-
-```bash
-cargo build --release
-```
-
-### Running
-
-```bash
-cargo run
-```
-
-This will start the shell. You can type commands like:
-
-```
-ls
-cd
-cd ..
-pwd
-ls -a
-mkdir
-touch
-rmdir
-```
+- Built-in commands: `ls`, `cd`, `pwd`, `mkdir`, `touch`, `rmdir`, and more
+- Manual flag parsing (with plans for `clap` integration)
+- Directory listing and navigation
+- Minimalist and focused on understanding, not production
 
 ---
 
-## Installing `nexsh` system-wide
+## 🛠️ Prerequisites
 
-If you want to use `nexsh` from any directory in your terminal, you can copy the compiled binary into a directory included in your system's `PATH`, such as `/usr/local/bin` (recommended) or `/usr/bin`.
+[![Rust](https://img.shields.io/badge/Requires-Rust-blue?logo=rust)](https://www.rust-lang.org/tools/install)
 
-### Steps
+You need [Rust](https://www.rust-lang.org/tools/install) installed.
 
-1. **Build the Release Binary**
+---
+
+## 📦 Installation
+
+You have two options: automated script or manual install.
+
+### 🔹 1. Quick Install via Script
+
+**Recommended:** Installs the latest release binary to your system PATH.
+
+```bash
+curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexsh/main/scripts/install.sh | bash
+```
+
+- This script will:
+  1. Build `nexsh` in release mode (if Rust is present).
+  2. Copy the binary to `/usr/local/bin`.
+  3. Make it executable.
+
+> **Tip:** You may need to enter your password for `sudo` privileges.
+
+---
+
+### 🔹 2. Manual Build & Install
+
+If you prefer full control or want to customize the build:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/santoshxshrestha/nexsh.git
+   cd nexsh
+   ```
+
+2. **Build the Release Binary:**
 
    ```bash
    cargo build --release
    ```
 
-   This will place the binary at `target/release/nexsh`.
+   This places the binary at `target/release/nexsh`.
 
-2. **Copy to `/usr/local/bin` (recommended)**
+3. **Copy to a PATH directory (e.g., `/usr/local/bin`):**
 
    ```bash
    sudo cp target/release/nexsh /usr/local/bin/nexsh
    ```
 
-   Or, to `/usr/bin` (if you prefer):
-
-   ```bash
-   sudo cp target/release/nexsh /usr/bin/nexsh
-   ```
-
-3. **(Optional) Ensure it is executable**
-
-   Usually, Cargo makes it executable, but you can be sure by running:
+4. **(Optional) Ensure executable permission:**
 
    ```bash
    sudo chmod +x /usr/local/bin/nexsh
    ```
 
-4. **Run `nexsh` from anywhere**
-
-   Now you can just type:
+5. **Run from anywhere:**
 
    ```bash
    nexsh
    ```
 
-   from any terminal prompt.
+---
 
-#### Uninstallation
+## 🗑️ Uninstallation
 
-To remove `nexsh` from your system:
+You can uninstall using the provided script or manually:
+
+### 🔹 1. Quick Uninstall via Script
+
+```bash
+curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexsh/main/scripts/uninstall.sh | bash
+```
+
+### 🔹 2. Manual Uninstall
+
+Remove the binary from your PATH:
 
 ```bash
 sudo rm /usr/local/bin/nexsh
@@ -117,14 +117,46 @@ or
 sudo rm /usr/bin/nexsh
 ```
 
+If you also want to remove your cloned repository:
+
+```bash
+rm -rf ~/nexsh
+```
+
 ---
 
-## Notes
+## 🖥️ Usage
 
-- This is a **learning project**. The code may not handle all edge cases or be ready for general use.
-- Contributions or suggestions are welcome, but the main goal is personal improvement and exploration.
+After installation, start the shell by typing:
 
-## License
+```bash
+nexsh
+```
+
+You can use commands like:
+
+```
+ls
+cd
+pwd
+ls -a
+mkdir
+touch
+rmdir
+```
+
+---
+
+## ⚠️ Notes
+
+- **Learning project:** Not all edge cases are handled.
+- Not intended for production use.
+- Suggestions and contributions are welcome as part of the learning process.
+
+---
+
+## 📄 License
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Made as a Rust learning exercise. Enjoy exploring!
