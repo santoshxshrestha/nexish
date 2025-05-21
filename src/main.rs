@@ -105,7 +105,7 @@ fn device_logo() -> &'static str {
     }
 }
 
-fn git_info()-> String {
+fn git_current_branch()-> String {
     if let Ok(repo) = Repository::discover("."){
         if let Ok(head) =  repo.head(){
             if let Some(branch) =  head.shorthand(){
@@ -122,7 +122,7 @@ fn main() {
             device_logo(),
             get_username(),
             get_relative_dir(),
-            git_info(),
+            git_current_branch(),
             get_time()
         );
         print!("-> ");
