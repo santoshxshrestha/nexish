@@ -12,7 +12,6 @@ else
     echo "Removed nexsh binary from $INSTALL_PATH"
 fi
 
-# Remove the cloned repo, if it exists
 if [ ! -d "$REPO_DIR" ]; then
     echo "Warning: nexsh repository not found at $REPO_DIR"
 else
