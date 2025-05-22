@@ -45,11 +45,30 @@ Some parts of `nexish` use special Unicode symbols and icons (such as device log
 
 ## 📦 Installation
 
-You have two options: automated script or manual install.
+You have three options: via Cargo, via prebuilt script, or manual install.
 
-### 🔹 1. Quick Install via Script
+### 🔹 1. Easiest: Install via Cargo (Recommended)
 
-**Recommended:** Installs the latest release binary to your system PATH.
+If you have Rust installed, you can install directly from [crates.io](https://crates.io):
+
+```bash
+cargo install nexish
+```
+
+This is the most "Rusty" and portable way.  
+It automatically downloads, compiles, and installs the latest version to your `$HOME/.cargo/bin`.
+
+> If you want even faster installs with prebuilt binaries, check out [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
+
+```bash
+cargo binstall nexish
+```
+
+---
+
+### 🔹 2. Quick Install via Script
+
+**Alternative:** Installs the latest release binary to your system PATH.
 
 ```bash
 curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexish/main/scripts/install.sh | bash
@@ -64,7 +83,7 @@ curl -sSfL https://raw.githubusercontent.com/santoshxshrestha/nexish/main/script
 
 ---
 
-### 🔹 2. Manual Build & Install
+### 🔹 3. Manual Build & Install
 
 If you prefer full control or want to customize the build:
 
@@ -131,6 +150,12 @@ If you also want to remove your cloned repository:
 
 ```bash
 rm -rf ~/nexish
+```
+
+If installed with Cargo:
+
+```bash
+cargo uninstall nexish
 ```
 
 ---
