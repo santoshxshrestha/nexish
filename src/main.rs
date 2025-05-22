@@ -1,4 +1,4 @@
-#![allow(unused)]
+ #![allow(unused)]
 use std::env::{self, current_dir};
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
@@ -6,12 +6,9 @@ use std::process::{Child, Command, Stdio};
 use std::borrow::Cow;
 
 use chrono::Local;
-use dirs;
 use git2::Repository;
-use os_info;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
-use whoami;
 use nu_ansi_term::Style;
 
 use reedline::{
@@ -278,7 +275,7 @@ fn main() {
                                 Err(e) => eprintln!("pwd: error retrieving current directory: {}", e),
                             },
                             "cd" => {
-                                let new_dir = args.get(0).map(|s| s.as_str());
+                                let new_dir = args.first().map(|s| s.as_str());
                                 let target_dir = match new_dir {
                                     Some(path) => Path::new(path).to_path_buf(),
                                     None => dirs::home_dir().expect("Could not get home directory"),
@@ -292,8 +289,7 @@ fn main() {
                             "mkdir" => {
                                 let mut recursive = false;
                                 let mut targets: Vec<&str> = Vec::new();
-                                let mut args_iter = args.iter();
-                                while let Some(arg) = args_iter.next() {
+                                for arg in args.iter() {
                                     if arg == "-p" {
                                         recursive = true;
                                     } else {
