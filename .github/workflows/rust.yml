@@ -52,10 +52,3 @@ jobs:
         run: |
           set -euxo pipefail
           cargo fmt --all -- --check
-
-      Optional: Upload build artifacts (useful for debugging or releases)
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: target/
