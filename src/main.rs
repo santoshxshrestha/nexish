@@ -63,7 +63,7 @@ struct ShellPrompt;
 impl Prompt for ShellPrompt {
     fn render_prompt_left(&self) -> Cow<str> {
         let prompt_str = format!(
-            "{}{} in {} {}at  {}",
+            "{}{} in {} {}at  {}\n",
             device_logo(),
             get_username(),
             get_relative_dir(),
@@ -83,7 +83,7 @@ impl Prompt for ShellPrompt {
     }
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<str> {
         Cow::Borrowed("-> ")
-    }
+    } 
     fn render_prompt_multiline_indicator(&self) -> Cow<str> {
         Cow::Borrowed("::: ")
     }
