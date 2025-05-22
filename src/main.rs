@@ -1,20 +1,63 @@
-use reedline::MenuBuilder;
+#![allow(unused)]
 use std::env::{self, current_dir};
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::borrow::Cow;
 
 use chrono::Local;
 use dirs;
 use git2::Repository;
 use os_info;
-use reedline::{
-    default_emacs_keybindings, ColumnarMenu, DefaultCompleter,  Emacs, ExampleHighlighter,
-    FileBackedHistory, KeyCode, KeyModifiers, Prompt, Reedline, ReedlineEvent, ReedlineMenu,
-};
-use reedline::{ PromptEditMode, PromptHistorySearch};
-use std::borrow::Cow;
+use reedline::ExampleHighlighter;
+use reedline::MenuBuilder;
 use whoami;
+use nu_ansi_term::Style;
+
+use reedline::{
+    default_emacs_keybindings, ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory,
+    KeyCode, KeyModifiers, Prompt, PromptEditMode, PromptHistorySearch, Reedline, ReedlineEvent,
+    ReedlineMenu, Highlighter, StyledText,
+};
+
+struct ShellHighlighter {
+    commands: Vec<String>,
+}
+
+impl ShellHighlighter {
+    pub fn new(commands: Vec<String>) -> Self {
+        Self { commands }
+    }
+}
+
+impl Highlighter for ShellHighlighter {
+    fn highlight(&self, line: &str, _cursor: usize) -> StyledText {
+        let mut styled = StyledText::new();
+        let mut parts = line.split_whitespace();
+
+        if let Some(first) = parts.next() {
+            let is_cmd = self.commands.iter().any(|c| c == first);
+            let style = if is_cmd {
+                Style::new().fg(nu_ansi_term::Color::Cyan).bold()
+            } else {
+                Style::new().fg(nu_ansi_term::Color::White).bold()
+            };
+            styled.push((style, first.to_string()));
+        }
+        for arg in parts {
+            styled.push((Style::new(), " ".to_string())); 
+            let style = if arg.starts_with('-') {
+                Style::new().fg(nu_ansi_term::Color::Yellow).bold()
+            } else if arg.contains('/') || arg.starts_with('.') {
+                Style::new().fg(nu_ansi_term::Color::Blue)
+            } else {
+                Style::new().fg(nu_ansi_term::Color::White)
+            };
+            styled.push((style, arg.to_string()));
+        }
+        styled
+    }
+}
 
 struct ShellPrompt;
 impl Prompt for ShellPrompt {
@@ -95,7 +138,6 @@ fn git_current_branch() -> String {
     }
     String::new()
 }
-
 fn main() {
     let commands = vec![
         "ls".to_string(),

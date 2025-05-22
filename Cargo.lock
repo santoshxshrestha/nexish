@@ -489,6 +489,7 @@ dependencies = [
  "chrono",
  "dirs",
  "git2",
+ "nu-ansi-term",
  "os_info",
  "reedline",
  "shell-words",
