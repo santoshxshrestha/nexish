@@ -62,14 +62,21 @@ impl Highlighter for ShellHighlighter {
 struct ShellPrompt;
 impl Prompt for ShellPrompt {
     fn render_prompt_left(&self) -> Cow<str> {
-        Cow::Owned(format!(
+        let prompt_str = format!(
             "{}{} in {} {}at  {}",
             device_logo(),
             get_username(),
             get_relative_dir(),
             git_current_branch(),
             get_time()
-        ))
+        );
+        Cow::Owned(
+            Style::new()
+                .fg(nu_ansi_term::Color::White)
+                .bold()
+                .paint(prompt_str)
+                .to_string()
+        )
     }
     fn render_prompt_right(&self) -> Cow<str> {
         Cow::Borrowed("")
