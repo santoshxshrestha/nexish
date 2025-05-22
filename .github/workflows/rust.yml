@@ -13,14 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: rust-lang/setup-rust@v1
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
-
-      - name: Install clippy and rustfmt
-        run: |
-          rustup component add clippy rustfmt
+          toolchain: stable
+          override: true
+          components: clippy, rustfmt
 
       - name: Cache cargo registry and build
         uses: actions/cache@v4
@@ -29,26 +27,18 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
 
       - name: Build
-        run: |
-          set -euxo pipefail
-          cargo build --verbose --all-targets
+        run: cargo build --verbose --all-targets
 
       - name: Run tests
-        run: |
-          set -euxo pipefail
-          cargo test --verbose --all-targets
+        run: cargo test --verbose --all-targets
 
       - name: Run clippy (linter)
-        run: |
-          set -euxo pipefail
-          cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Check formatting (rustfmt)
-        run: |
-          set -euxo pipefail
-          cargo fmt --all -- --check
+        run: cargo fmt --all -- --check
