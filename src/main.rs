@@ -1,9 +1,12 @@
  #![allow(unused)]
 use std::env::{self, current_dir};
+use std::fmt::format;
 use std::fs::{self, File};
+use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::borrow::Cow;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::Local;
 use git2::Repository;
@@ -220,15 +223,23 @@ fn main() {
                             "whoami" => {
                                 println!("{}", get_username());
                             }
+
                             "ls" => {
                                 let mut hidden = false;
+                                let mut list = false;
                                 let mut dir_path = ".".to_string();
                                 for arg in args {
                                     if arg == "-a" {
                                         hidden = true;
-                                    } else {
+                                    }else if(arg == "-la" || arg == "-al"){
+                                        list = true;
+                                        hidden = true;
+                                    } else if( arg == "-l"){
+                                        list = true;
+                                    }else {
                                         dir_path = arg.to_string();
                                     }
+                                    
                                 }
                                 let entries = match fs::read_dir(&dir_path) {
                                     Ok(e) => e,
@@ -242,10 +253,34 @@ fn main() {
                                     if !hidden && file_name.starts_with('.') {
                                         continue;
                                     }
+                                    if list{
+                                        let meta = match entry.metadata(){
+                                            Ok(m) => m,
+                                            Err(_) => continue,
+                                        };
+                                        let mode = meta.mode();
+                                        let perms = mode & 0o777;
+                                        let size = meta.size();
+                                        let mtime = meta.mtime();
+                                        let modified_time = match SystemTime::UNIX_EPOCH.checked_add(std::time::Duration::from_secs(mtime as u64)) {
+                                            Some(t) => match t.duration_since(UNIX_EPOCH){
+                                                Ok(d) => format!("{}", d.as_secs()),
+                                                Err(_) => "?".to_string()
+                                            },
+                                            None => "?".to_string(),
+                                        };
+                                        print!("-{:o} {:>5} {}", perms, size, modified_time);
+                                    }
                                     print!("{}  ", file_name);
+                                    if list {
+                                        println!()
+                                    }
                                 }
+                                if !list {
                                 println!();
+                                };
                             }
+
                             "touch" => {
                                 if args.is_empty() {
                                     eprintln!("touch: missing file operand");
