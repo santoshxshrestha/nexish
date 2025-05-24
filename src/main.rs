@@ -156,7 +156,12 @@ fn main() {
         "mkdir".to_string(),
         "whoami".to_string(),
         "exit".to_string(),
-
+        "git".to_string(),
+        "nvim".to_string(),
+        "vim".to_string(),
+        "g++".to_string(),
+        "gcc".to_string(),
+        "cargo".to_string(),
     ];
 
     let mut file_candidates = vec![];
