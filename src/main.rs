@@ -147,6 +147,7 @@ fn git_current_branch() -> String {
 }
 fn main() {
     let commands = vec![
+        "clear".to_string(),
         "ls".to_string(),
         "rm".to_string(),
         "rmdir".to_string(),
