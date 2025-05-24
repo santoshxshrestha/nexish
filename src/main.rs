@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::borrow::Cow;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::Duration;
 
 use chrono::Local;
 use git2::Repository;
@@ -267,14 +268,21 @@ fn main() {
                                         let mode = meta.mode();
                                         let perms = mode & 0o777;
                                         let size = meta.size();
-                                        let mtime = meta.mtime();
-                                        let modified_time = match SystemTime::UNIX_EPOCH.checked_add(std::time::Duration::from_secs(mtime as u64)) {
-                                            Some(t) => match t.duration_since(UNIX_EPOCH){
-                                                Ok(d) => format!("{}", d.as_secs()),
-                                                Err(_) => "?".to_string()
-                                            },
-                                            None => "?".to_string(),
+                                        let mtime = meta.mtime() as u64;
+                                        let file_time =  UNIX_EPOCH  + Duration::from_secs(mtime);
+                                        let now = SystemTime::now();
+                                        let diff = now.duration_since(file_time).unwrap_or_else(|_|
+                                            Duration::from_secs(0));
+                                        let seconds = diff.as_secs();
+
+                                        let modified_time = if seconds < 60 {
+                                            "just now".to_string()
+                                        }else if seconds < 3600 {
+                                            format!("{} min ago",seconds / 60)
+                                        }else {
+                                            format!("{} hr ago", seconds / 86400)
                                         };
+
                                         print!("-{:o} {:>5} {}", perms, size, modified_time);
                                     }
                                     print!("{}  ", file_name);
@@ -283,7 +291,7 @@ fn main() {
                                     }
                                 }
                                 if !list {
-                                println!();
+                                    println!();
                                 };
                             }
 
