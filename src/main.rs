@@ -1,6 +1,5 @@
- #![allow(unused)]
+#![allow(unused)]
 use std::env::{self, current_dir};
-use std::fmt::format;
 use std::fs::{self, File};
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
@@ -236,17 +235,16 @@ fn main() {
                                 let mut list = false;
                                 let mut dir_path = ".".to_string();
                                 for arg in args {
-                                    if arg == "-a" {
-                                        hidden = true;
-                                    }else if(arg == "-la" || arg == "-al"){
-                                        list = true;
-                                        hidden = true;
-                                    } else if( arg == "-l"){
-                                        list = true;
-                                    }else {
-                                        dir_path = arg.to_string();
+                                    match arg.as_str() {
+                                        "-a" => hidden = true,
+                                        "-l" => list = true,
+                                        "-la" | "-al" =>{
+                                            list = true;
+                                            hidden = true;
+                                        },
+                                        _ => dir_path = arg.to_string(),
+                                        
                                     }
-                                    
                                 }
                                 let entries = match fs::read_dir(&dir_path) {
                                     Ok(e) => e,
