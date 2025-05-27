@@ -1,23 +1,23 @@
 #![allow(unused)]
+use std::borrow::Cow;
 use std::env::{self, current_dir};
 use std::fs::{self, File};
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
-use std::borrow::Cow;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::time::Duration;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::Local;
 use git2::Repository;
+use nu_ansi_term::Style;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
-use nu_ansi_term::Style;
 
 use reedline::{
     default_emacs_keybindings, ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory,
-    KeyCode, KeyModifiers, Prompt, PromptEditMode, PromptHistorySearch, Reedline, ReedlineEvent,
-    ReedlineMenu, Highlighter, StyledText,
+    Highlighter, KeyCode, KeyModifiers, Prompt, PromptEditMode, PromptHistorySearch, Reedline,
+    ReedlineEvent, ReedlineMenu, StyledText,
 };
 
 struct ShellHighlighter {
@@ -45,7 +45,7 @@ impl Highlighter for ShellHighlighter {
             styled.push((style, first.to_string()));
         }
         for arg in parts {
-            styled.push((Style::new(), " ".to_string())); 
+            styled.push((Style::new(), " ".to_string()));
             let style = if arg.starts_with('-') {
                 Style::new().fg(nu_ansi_term::Color::Yellow).bold()
             } else if arg.contains('/') || arg.starts_with('.') {
@@ -75,7 +75,7 @@ impl Prompt for ShellPrompt {
                 .fg(nu_ansi_term::Color::White)
                 .bold()
                 .paint(prompt_str)
-                .to_string()
+                .to_string(),
         )
     }
     fn render_prompt_right(&self) -> Cow<str> {
@@ -83,11 +83,14 @@ impl Prompt for ShellPrompt {
     }
     fn render_prompt_indicator(&self, _edit_mode: PromptEditMode) -> Cow<str> {
         Cow::Borrowed("-> ")
-    } 
+    }
     fn render_prompt_multiline_indicator(&self) -> Cow<str> {
         Cow::Borrowed("::: ")
     }
-    fn render_prompt_history_search_indicator(&self, _history_search: PromptHistorySearch) -> Cow<str> {
+    fn render_prompt_history_search_indicator(
+        &self,
+        _history_search: PromptHistorySearch,
+    ) -> Cow<str> {
         Cow::Borrowed("history: ")
     }
 }
@@ -175,7 +178,10 @@ fn main() {
     let mut completion_list = commands.clone();
     completion_list.extend(file_candidates);
 
-    let completer = Box::new(DefaultCompleter::new_with_wordlen(completion_list.clone(), 1));
+    let completer = Box::new(DefaultCompleter::new_with_wordlen(
+        completion_list.clone(),
+        1,
+    ));
     let completion_menu = Box::new(ColumnarMenu::default().with_name("completion_menu"));
 
     let mut keybindings = default_emacs_keybindings();
@@ -238,12 +244,11 @@ fn main() {
                                     match arg.as_str() {
                                         "-a" => hidden = true,
                                         "-l" => list = true,
-                                        "-la" | "-al" =>{
+                                        "-la" | "-al" => {
                                             list = true;
                                             hidden = true;
-                                        },
+                                        }
                                         _ => dir_path = arg.to_string(),
-                                        
                                     }
                                 }
                                 let entries = match fs::read_dir(&dir_path) {
@@ -258,8 +263,8 @@ fn main() {
                                     if !hidden && file_name.starts_with('.') {
                                         continue;
                                     }
-                                    if list{
-                                        let meta = match entry.metadata(){
+                                    if list {
+                                        let meta = match entry.metadata() {
                                             Ok(m) => m,
                                             Err(_) => continue,
                                         };
@@ -267,17 +272,18 @@ fn main() {
                                         let perms = mode & 0o777;
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
-                                        let file_time =  UNIX_EPOCH  + Duration::from_secs(mtime);
+                                        let file_time = UNIX_EPOCH + Duration::from_secs(mtime);
                                         let now = SystemTime::now();
-                                        let diff = now.duration_since(file_time).unwrap_or_else(|_|
-                                            Duration::from_secs(0));
+                                        let diff = now
+                                            .duration_since(file_time)
+                                            .unwrap_or_else(|_| Duration::from_secs(0));
                                         let seconds = diff.as_secs();
 
                                         let modified_time = if seconds < 60 {
                                             "just now".to_string()
-                                        }else if seconds < 3600 {
-                                            format!("{} min ago",seconds / 60)
-                                        }else {
+                                        } else if seconds < 3600 {
+                                            format!("{} min ago", seconds / 60)
+                                        } else {
                                             format!("{} hr ago", seconds / 86400)
                                         };
 
@@ -300,7 +306,10 @@ fn main() {
                                     for file in args {
                                         match File::create(file) {
                                             Ok(_) => {}
-                                            Err(e) => eprintln!("touch: file creating failed '{}': {}", file, e),
+                                            Err(e) => eprintln!(
+                                                "touch: file creating failed '{}': {}",
+                                                file, e
+                                            ),
                                         }
                                     }
                                 }
@@ -312,14 +321,19 @@ fn main() {
                                     for dir in args {
                                         match fs::remove_dir(dir) {
                                             Ok(_) => {}
-                                            Err(e) => eprintln!("rmdir: failed to remove '{}': {}", dir, e),
+                                            Err(e) => eprintln!(
+                                                "rmdir: failed to remove '{}': {}",
+                                                dir, e
+                                            ),
                                         }
                                     }
                                 }
                             }
                             "pwd" => match get_current_dir() {
                                 Ok(path) => println!("{}", path.display()),
-                                Err(e) => eprintln!("pwd: error retrieving current directory: {}", e),
+                                Err(e) => {
+                                    eprintln!("pwd: error retrieving current directory: {}", e)
+                                }
                             },
                             "cd" => {
                                 let new_dir = args.first().map(|s| s.as_str());
@@ -351,7 +365,10 @@ fn main() {
                                         fs::create_dir(path)
                                     };
                                     if let Err(e) = result {
-                                        eprintln!("mkdir: cannot create directory '{}': {}", dir, e);
+                                        eprintln!(
+                                            "mkdir: cannot create directory '{}': {}",
+                                            dir, e
+                                        );
                                     }
                                 }
                                 previous_command = None;
@@ -360,7 +377,8 @@ fn main() {
                             command => {
                                 let stdin = match &mut previous_command {
                                     Some(child) => {
-                                        let stdout = child.stdout.take().expect("Failed to take the stdout");
+                                        let stdout =
+                                            child.stdout.take().expect("Failed to take the stdout");
                                         Stdio::from(stdout)
                                     }
                                     None => Stdio::inherit(),
