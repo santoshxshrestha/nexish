@@ -273,8 +273,8 @@ fn main() {
                                         };
                                         let mode = meta.mode();
                                         let perms = display_permissions(&meta);
-                                        let owners = get_name(meta.uid());
-                                        let groups = get_name(meta.gid());
+                                        let owner = get_name(meta.uid());
+                                        let group = get_name(meta.gid());
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
                                         let file_time = UNIX_EPOCH + Duration::from_secs(mtime);
@@ -294,7 +294,7 @@ fn main() {
 
                                         print!(
                                             "{} {} {} {:>5} {}",
-                                            perms, owners, groups, size, modified_time
+                                            perms, owner, group, size, modified_time
                                         );
                                     }
                                     print!("{}  ", file_name);
