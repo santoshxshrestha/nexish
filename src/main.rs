@@ -1,6 +1,7 @@
 #![allow(unused)]
 use std::borrow::Cow;
 use std::env::{self, current_dir};
+use std::fs::metadata;
 use std::fs::{self, File};
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
@@ -13,6 +14,7 @@ use git2::Repository;
 use nu_ansi_term::Style;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
+use unix_perms::display_permissions;
 
 use reedline::{
     default_emacs_keybindings, ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory,
@@ -269,7 +271,7 @@ fn main() {
                                             Err(_) => continue,
                                         };
                                         let mode = meta.mode();
-                                        let perms = mode & 0o777;
+                                        let perms = display_permissions(&meta);
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
                                         let file_time = UNIX_EPOCH + Duration::from_secs(mtime);
@@ -287,7 +289,7 @@ fn main() {
                                             format!("{} hr ago", seconds / 86400)
                                         };
 
-                                        print!("-{:o} {:>5} {}", perms, size, modified_time);
+                                        print!("{} {:>5} {}", perms, size, modified_time);
                                     }
                                     print!("{}  ", file_name);
                                     if list {

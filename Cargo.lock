@@ -493,6 +493,7 @@ dependencies = [
  "os_info",
  "reedline",
  "shell-words",
+ "unix_perms",
  "whoami",
 ]
 
@@ -872,6 +873,15 @@ name = "unicode-width"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fc81956842c57dac11422a97c3b8195a1ff727f06e85c84ed2e8aa277c9a0fd"
+
+[[package]]
+name = "unix_perms"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be4077943926c00aa46035092119784764a3ef9deeb3d4210e40a477852567e6"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "url"
