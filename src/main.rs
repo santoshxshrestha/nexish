@@ -15,7 +15,7 @@ use git2::Repository;
 use nu_ansi_term::Style;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
-use unix_perms::display_permissions;
+use unix_perms::{display_permissions, get_name};
 
 use reedline::{
     default_emacs_keybindings, ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory,
@@ -273,8 +273,8 @@ fn main() {
                                         };
                                         let mode = meta.mode();
                                         let perms = display_permissions(&meta);
-                                        let owners_id = meta.uid();
-                                        let group_id = meta.gid();
+                                        let owners = get_name(meta.uid());
+                                        let groups = get_name(meta.gid());
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
                                         let file_time = UNIX_EPOCH + Duration::from_secs(mtime);
@@ -294,7 +294,7 @@ fn main() {
 
                                         print!(
                                             "{} {} {} {:>5} {}",
-                                            perms, owners_id, group_id, size, modified_time
+                                            perms, owners, groups, size, modified_time
                                         );
                                     }
                                     print!("{}  ", file_name);
