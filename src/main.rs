@@ -3,6 +3,7 @@ use std::borrow::Cow;
 use std::env::{self, current_dir};
 use std::fs::metadata;
 use std::fs::{self, File};
+use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
@@ -272,6 +273,8 @@ fn main() {
                                         };
                                         let mode = meta.mode();
                                         let perms = display_permissions(&meta);
+                                        let owners_id = meta.uid();
+                                        let group_id = meta.gid();
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
                                         let file_time = UNIX_EPOCH + Duration::from_secs(mtime);
@@ -289,7 +292,10 @@ fn main() {
                                             format!("{} hrs ago ", seconds / 86400)
                                         };
 
-                                        print!("{} {:>5} {}", perms, size, modified_time);
+                                        print!(
+                                            "{} {} {} {:>5} {}",
+                                            perms, owners_id, group_id, size, modified_time
+                                        );
                                     }
                                     print!("{}  ", file_name);
                                     if list {
