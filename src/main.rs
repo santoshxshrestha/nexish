@@ -284,9 +284,9 @@ fn main() {
                                         let modified_time = if seconds < 60 {
                                             "just now".to_string()
                                         } else if seconds < 3600 {
-                                            format!("{} min ago", seconds / 60)
+                                            format!("{} min ago ", seconds / 60)
                                         } else {
-                                            format!("{} hr ago", seconds / 86400)
+                                            format!("{} hr ago ", seconds / 86400)
                                         };
 
                                         print!("{} {:>5} {}", perms, size, modified_time);
