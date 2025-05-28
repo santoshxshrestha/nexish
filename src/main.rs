@@ -1,9 +1,7 @@
 #![allow(unused)]
 use std::borrow::Cow;
 use std::env::{self, current_dir};
-use std::fs::metadata;
 use std::fs::{self, File};
-use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
@@ -15,7 +13,7 @@ use git2::Repository;
 use nu_ansi_term::Style;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
-use unix_perms::{display_permissions, get_name, get_owner_and_group};
+use unix_perms::{display_permissions, get_owner_and_group};
 
 use reedline::{
     default_emacs_keybindings, ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory,
