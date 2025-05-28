@@ -286,7 +286,7 @@ fn main() {
                                         } else if seconds < 3600 {
                                             format!("{} min ago ", seconds / 60)
                                         } else {
-                                            format!("{} hr ago ", seconds / 86400)
+                                            format!("{} hrs ago ", seconds / 86400)
                                         };
 
                                         print!("{} {:>5} {}", perms, size, modified_time);
