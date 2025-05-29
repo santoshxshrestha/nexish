@@ -283,7 +283,7 @@ fn main() {
                                         let (owner, group) = get_owner_and_group(entry);
 
                                         let modified_time = if seconds < 60 {
-                                            "just now".to_string()
+                                            "just now ".to_string()
                                         } else if seconds < 3600 {
                                             format!("{} min ago ", seconds / 60)
                                         } else if seconds < 86400 {
