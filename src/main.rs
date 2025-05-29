@@ -270,7 +270,6 @@ fn main() {
                                             Err(_) => continue,
                                         };
                                         let hard_links = meta.nlink();
-                                        let mode = meta.mode();
                                         let perms = display_permissions(&meta);
                                         let size = meta.size();
                                         let mtime = meta.mtime() as u64;
