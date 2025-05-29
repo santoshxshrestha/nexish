@@ -286,8 +286,10 @@ fn main() {
                                             "just now".to_string()
                                         } else if seconds < 3600 {
                                             format!("{} min ago ", seconds / 60)
+                                        } else if seconds < 86400 {
+                                            format!("{} hrs ago ", seconds / 3600)
                                         } else {
-                                            format!("{} hrs ago ", seconds / 86400)
+                                            format!("{} days ago ", seconds / 86400)
                                         };
 
                                         print!(
