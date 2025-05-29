@@ -269,6 +269,7 @@ fn main() {
                                             Ok(m) => m,
                                             Err(_) => continue,
                                         };
+                                        let hard_links = meta.nlink();
                                         let mode = meta.mode();
                                         let perms = display_permissions(&meta);
                                         let size = meta.size();
@@ -290,8 +291,8 @@ fn main() {
                                         };
 
                                         print!(
-                                            "{} {} {} {:>5} {}",
-                                            perms, owner, group, size, modified_time
+                                            "{} {} {} {} {:>5} {}",
+                                            perms, hard_links, owner, group, size, modified_time
                                         );
                                     }
                                     print!("{}  ", file_name);
