@@ -13,13 +13,11 @@ use git2::Repository;
 use nu_ansi_term::Style;
 use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
-use unix_perms::{display_permissions, get_owner_and_group};
-
-use reedline::default_emacs_keybindings;
 use reedline::{
     ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory, Highlighter, KeyCode, KeyModifiers,
     Prompt, PromptEditMode, PromptHistorySearch, Reedline, ReedlineEvent, ReedlineMenu, StyledText,
 };
+use unix_perms::{display_permissions, get_owner_and_group};
 
 struct ShellHighlighter {
     commands: Vec<String>,
@@ -185,7 +183,7 @@ fn main() {
     ));
     let completion_menu = Box::new(ColumnarMenu::default().with_name("completion_menu"));
 
-    let mut keybindings = default_emacs_keybindings();
+    let mut keybindings = reedline::default_emacs_keybindings();
     keybindings.add_binding(
         KeyModifiers::NONE,
         KeyCode::Tab,
