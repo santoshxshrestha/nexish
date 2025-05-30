@@ -15,10 +15,10 @@ use reedline::ExampleHighlighter;
 use reedline::MenuBuilder;
 use unix_perms::{display_permissions, get_owner_and_group};
 
+use reedline::default_emacs_keybindings;
 use reedline::{
     ColumnarMenu, DefaultCompleter, Emacs, FileBackedHistory, Highlighter, KeyCode, KeyModifiers,
     Prompt, PromptEditMode, PromptHistorySearch, Reedline, ReedlineEvent, ReedlineMenu, StyledText,
-    default_emacs_keybindings,
 };
 
 struct ShellHighlighter {
